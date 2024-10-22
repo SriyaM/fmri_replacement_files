@@ -1,0 +1,147 @@
+description: example job
+
+target:
+  service: sing
+  name: msrresrchvc
+  workspace_name: gcrllama2ws
+
+code:
+  local_dir: /home/t-smantena/deep-fMRI-dataset # path to your code on local machine
+
+environment:
+  image: amlt-sing/acpt-2.3.1-py3.10-cuda12.1
+  setup:
+    # working directory is local_dir under code above
+    - pip install -r requirements.txt --user # install requirements from file
+    # - pip install . # install a package from the local directory
+
+storage:
+  data:
+    storage_account_name: internblobdl
+    container_name: t-smantena
+    mount_dir: /blob_data # path to mount the blob on the remote machine
+
+jobs:
+  # SUBJECT 1
+  - name: llama_16_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature llama --k 16
+  - name: eng1000_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature eng1000
+  - name: dist_gpt_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_dist_gpt
+  - name: dist_llama_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_dist_llama
+  - name: fuzzy_gpt_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_fuzzy_gpt --x 900 --k 0.8
+  - name: fuzzy_llama_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_fuzzy_llama --x 900 --k 0.8
+  - name: infini_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_infini --x 900 --k 1.0
+  - name: infini_w_cont_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_infini_w_cont --x 900 --k 1.0
+  - name: incont_infini_s1
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_infini --x 900 --k 1.0
+  # SUBJECT 2
+  - name: llama_16_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature llama --k 16
+  - name: eng1000_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature eng1000
+  - name: dist_gpt_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_dist_gpt
+  - name: dist_llama_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_dist_llama
+  - name: fuzzy_gpt_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_fuzzy_gpt --x 900 --k 0.8
+  - name: fuzzy_llama_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_fuzzy_llama --x 900 --k 0.8
+  - name: infini_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_infini --x 900 --k 1.0
+  - name: infini_w_cont_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_infini_w_cont --x 900 --k 1.0
+  - name: incont_infini_s2
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_infini --x 900 --k 1.0
+  # NEW LLAMA INFINIGRAM W ALL SUBJECTS
+  - name: llama_infini_s1_thresh_1.0
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_infini --x 900 --k 1.0
+  - name: llama_infini_s2_thresh_1.0
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_infini --x 900 --k 1.0
+  - name: llama_infini_s3_thresh_1.0
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS03 --feature pca_tr_incont_infini --x 900 --k 1.0
+  - name: llama_infini_s1_thresh_0.8
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS01 --feature pca_tr_incont_infini --x 900 --k 0.8
+  - name: llama_infini_s2_thresh_0.8
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS02 --feature pca_tr_incont_infini --x 900 --k 0.8
+  - name: llama_infini_s3_thresh_0.8
+    process_count_per_node: 1
+    sku: G1-A100
+    command:
+      - python3 encoding/encoding.py --subject UTS03 --feature pca_tr_incont_infini --x 900 --k 0.8
